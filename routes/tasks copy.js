@@ -2,11 +2,22 @@ const { tasks } = require('../task.json');
 const express = require('express');
 const router = express.Router();
 
+// router.get('/', (req, res) => {
+//     res.send(taskList.tasks);
+// })
+
 router.get('/:id', (req, res) => {
     const task = tasks.find((task) => task.id === parseInt(req.params.id))
-    if(!task) return res.status(404).send({message: 'Task not found'});
+    if(!task) return res.status(404).send({message: 'Not found'});
     res.send(task);
 })
+
+// router.post('/', (req, res) => {
+//     const task = req.body;
+//     task.id = taskList.tasks.length + 1;
+//     taskList.tasks.push(task);
+//     res.send({success: true});
+// })
 
 router.get('/', (req, res) => {
     let { completed, sort } = req.query;
@@ -15,8 +26,8 @@ router.get('/', (req, res) => {
 
     // Filter by completion status if the 'completed' query param is provided
     if (completed !== undefined) {
-        // const isCompleted = completed === true;
-        filteredTasks = tasks.filter(task => task.completed === completed);
+        const isCompleted = completed === 'true';
+        filteredTasks = tasks.filter(task => task.completed === isCompleted);
     }
 
     // Sort by creation date if the 'sort' query param is provided
@@ -74,6 +85,18 @@ router.post('/', (req, res) => {
     res.status(201).send({ success: true, task });
 });
 
+
+// router.put('/:id', (req, res) => {
+//     const id = parseInt(req.params.id);
+//     const taskIndex = taskList.tasks.findIndex((task) => task.id === id);
+
+//     if (taskIndex === -1) {
+//         return res.status(404).send({ message: 'Task not found' });
+//     }
+//     taskList.tasks[taskIndex] = { ...taskList.tasks[taskIndex], ...req.body };
+//     res.send(taskList.tasks[taskIndex]);
+// });
+
 router.put('/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const { title, description, completed, priority } = req.body;
@@ -122,5 +145,6 @@ router.delete('/:id', (req, res) => {
         task: deletedTask
     });
 });
+
 
 module.exports = router;
